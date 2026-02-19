@@ -149,16 +149,10 @@ CLUSTER_MAP = {
     8: "Vocal Acoustic 🗣️ (Romántico)"
 }
 
+
 @st.cache_resource
 def load_resources():
     try:
-<<<<<<< Updated upstream
-        pipe = joblib.load('model_pipeline.pkl')
-        pca = joblib.load('model_pca.pkl')
-        gmm = joblib.load('model_gmm.pkl')
-        cols = joblib.load('model_cols.pkl')
-        db = pd.read_csv('songs_database.csv')
-=======
         base_dir = os.path.dirname(os.path.abspath(__file__))
         ruta_pipe = os.path.join(base_dir, 'models', 'model_pipeline.pkl')
         ruta_pca = os.path.join(base_dir, 'models', 'model_pca.pkl')
@@ -166,15 +160,13 @@ def load_resources():
         ruta_cols = os.path.join(base_dir, 'models', 'model_cols.pkl')
         ruta_db = os.path.join(base_dir, 'db', 'songs_database.csv')
         
-        # 3. Cargamos los archivos
         pipe = joblib.load(ruta_pipe)
         pca = joblib.load(ruta_pca)
         gmm = joblib.load(ruta_gmm)
         cols = joblib.load(ruta_cols)
-        db = pd.read_csv(ruta_db)
+        songs_db = pd.read_csv(ruta_db)
         
->>>>>>> Stashed changes
-        return pipe, pca, gmm, cols, db
+        return pipe, pca, gmm, cols, songs_db
         
     except Exception as e:
         st.error(f"Error cargando archivos: {e}")
