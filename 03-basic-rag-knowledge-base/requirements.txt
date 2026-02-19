@@ -1,0 +1,6 @@
+langchain_community==0.4.1
+langchain_core==1.2.13
+langchain_groq==1.1.2
+langchain_huggingface==1.2.0
+langchain_text_splitters==1.1.0
+streamlit==1.52.1

@@ -1,0 +1,8 @@
+# Archivo: .gitignore
+
+.streamlit/secrets.toml
+__pycache__/
+*.pkl
+venv/
+.env
+.DS_Store
