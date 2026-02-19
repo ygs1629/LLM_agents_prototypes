@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import os
 import joblib
 import time
 import google.generativeai as genai
@@ -117,16 +118,33 @@ CLUSTER_MAP = {
 @st.cache_resource
 def load_resources():
     try:
+<<<<<<< Updated upstream
         pipe = joblib.load('model_pipeline.pkl')
         pca = joblib.load('model_pca.pkl')
         gmm = joblib.load('model_gmm.pkl')
         cols = joblib.load('model_cols.pkl')
         db = pd.read_csv('songs_database.csv')
+=======
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        ruta_pipe = os.path.join(base_dir, 'models', 'model_pipeline.pkl')
+        ruta_pca = os.path.join(base_dir, 'models', 'model_pca.pkl')
+        ruta_gmm = os.path.join(base_dir, 'models', 'model_gmm.pkl')
+        ruta_cols = os.path.join(base_dir, 'models', 'model_cols.pkl')
+        ruta_db = os.path.join(base_dir, 'db', 'songs_database.csv')
+        
+        # 3. Cargamos los archivos
+        pipe = joblib.load(ruta_pipe)
+        pca = joblib.load(ruta_pca)
+        gmm = joblib.load(ruta_gmm)
+        cols = joblib.load(ruta_cols)
+        db = pd.read_csv(ruta_db)
+        
+>>>>>>> Stashed changes
         return pipe, pca, gmm, cols, db
+        
     except Exception as e:
+        st.error(f"Error cargando archivos: {e}")
         return None, None, None, None, None
-
-pipeline, pca_model, gmm_model, pca_cols, songs_db = load_resources()
 
 # =============================================================================
 # 4. GESTIÓN DE SESIÓN Y SIDEBAR (RESTAURADO)

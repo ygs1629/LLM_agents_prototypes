@@ -5,4 +5,11 @@ pandas==2.2.3
 protobuf>=4.25.0
 scikit-learn==1.5.2
 google-generativeai==0.8.3
+<<<<<<< Updated upstream
 streamlit==1.40.0
+=======
+streamlit==1.40.0
+spotipy==2.25.2
+toml == 0.10.2
+os
+>>>>>>> Stashed changes
