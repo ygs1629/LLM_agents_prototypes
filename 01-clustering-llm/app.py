@@ -171,7 +171,8 @@ def load_resources():
     except Exception as e:
         st.error(f"Error cargando archivos: {e}")
         return None, None, None, None, None
-
+    
+pipeline, pca_model, gmm_model, pca_cols, songs_db = load_resources()
 # =============================================================================
 # 4. GESTIÓN DE SESIÓN Y COMPONENTES VISUALES
 # =============================================================================
