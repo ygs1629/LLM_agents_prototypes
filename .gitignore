@@ -1,5 +1,6 @@
 # --- Python General ---
 __pycache__/
+.cache
 *.py[cod]
 *$py.class
 *.so
@@ -36,12 +37,3 @@ secrets.toml
 .idea/
 *.swp
 
-# --- Datos Grandes o Temporales ---
-*.csv
-*.xlsx
-*.pkl
-*.db
-*.sqlite3
-# Descomenta abajo si quieres ignorar modelos pesados descargados localmente
-*.gguf
-*.bin
