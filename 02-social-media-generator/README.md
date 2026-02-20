@@ -3,7 +3,7 @@
 ## ☁️ Overview
 A lightweight, LangChain-powered web application designed to generate platform-specific social media drafts. Using the Llama-3-70b model via the Groq API, it takes simple topics and translates them into formatted content ready for platforms like LinkedIn, X (Twitter), and Instagram. It serves as a practical portfolio prototype demonstrating API integration and UI state management.
 
-👉 **[Try the app here on Streamlit](https://your-app-link-here.streamlit.app)**
+👉 **[Try the app here on Streamlit](https://social-media-lcel.streamlit.app/)**
 
 ## 🎯 Objective
 To demonstrate a simple yet effective implementation of the LangChain Expression Language (LCEL) with advanced prompt engineering, resulting in a functional marketing tool.
