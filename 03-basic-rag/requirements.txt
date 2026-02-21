@@ -4,3 +4,6 @@ langchain_groq==1.1.2
 langchain_huggingface==1.2.0
 langchain_text_splitters==1.1.0
 streamlit==1.52.1
+pymupdf==1.27.1
+faiss-cpu==1.9.0
+sentence-transformers==3.3.1
