@@ -3,7 +3,7 @@
 ## ☁️ Overview
 A Retrieval-Augmented Generation (RAG) prototype built to interact with local PDF documents. This application allows users to upload technical manuals or dense documents and query them in real-time. By leveraging a strict prompting architecture, the assistant is constrained to answer *only* using the provided context, effectively eliminating LLM hallucinations.
 
-👉 **[Try the app here on Streamlit](https://your-app-link-here.streamlit.app)**
+👉 **[Try the app here on Streamlit](https://stateless-basic-rag.streamlit.app/)**
 
 ## 🎯 Objective
 To demonstrate the foundational mechanics of a RAG pipeline; from document ingestion and vector embedding, to similarity search and context-injected text generation; prioritizing factual accuracy over creative liberty.
