@@ -35,6 +35,10 @@ This alignment drastically improved all metrics, entirely eradicating hallucinat
 * **Validation & Metrics:** Pydantic, Python `statistics`
 * **Web Deployment:** Streamlit
 
+## 🖼️ A visual takeway
+
+![Workflow and evaluation architecture](image.png)
+
 ## ⚠️ Known Limitations
 While the Agent's reasoning and the LLM-as-a-Judge framework are robust, the custom tools currently rely on basic Python string matching and heuristics. 
 
