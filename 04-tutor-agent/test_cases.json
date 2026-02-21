@@ -1,0 +1,183 @@
+[
+  {
+    "id": "docker_huge_ml_image",
+    "user_query": "Mi imagen de Docker para PyTorch pesa 12GB y tarda horas en subirse. ¿Cómo la optimizo?",
+    "input_code": "FROM ubuntu:22.04\nRUN apt-get update && apt-get install -y python3 pip\nCOPY . /app\nRUN pip install torch torchvision\nCMD [\"python3\", \"/app/infer.py\"]",
+    "expected_issues": [
+      {"id": "use_slim_or_official_ml_image", "severity": "high"},
+      {"id": "copy_requirements_first_for_layer_caching", "severity": "high"},
+      {"id": "explain_docker_layer_cache_concept", "severity": "medium"}
+    ]
+  },
+  {
+    "id": "docker_root_ml_process",
+    "user_query": "He creado este Dockerfile para mi API de predicción. ¿Está listo para producción?",
+    "input_code": "FROM python:3.10-slim\nCOPY requirements.txt .\nRUN pip install -r requirements.txt\nCOPY . /app\nWORKDIR /app\nCMD [\"uvicorn\", \"main:app\", \"--host\", \"0.0.0.0\"]",
+    "expected_issues": [
+      {"id": "missing_non_root_user", "severity": "medium"},
+      {"id": "explain_security_risk_in_cloud", "severity": "medium"}
+    ]
+  },
+  {
+    "id": "docker_hardcoded_weights_token",
+    "user_query": "Este Dockerfile descarga mis pesos privados de HuggingFace, pero me da error en el CI/CD.",
+    "input_code": "FROM python:3.9\nENV HF_TOKEN=\"hf_abc123secret\"\nRUN pip install transformers\nCOPY download_model.py .\nRUN python download_model.py",
+    "expected_issues": [
+      {"id": "hardcoded_secret_in_dockerfile", "severity": "critical"},
+      {"id": "explain_build_secrets_or_env_vars", "severity": "high"}
+    ]
+  },
+  {
+    "id": "docker_no_model_volume",
+    "user_query": "Cada vez que reinicio el contenedor, vuelve a descargar el modelo de 5GB de S3. ¿Cómo lo evito?",
+    "input_code": "FROM python:3.9\nRUN pip install boto3 fastapi\nCOPY . /app\nCMD [\"python\", \"/app/download_and_serve.py\"]",
+    "expected_issues": [
+      {"id": "suggest_model_caching_strategy", "severity": "high"},
+      {"id": "explain_docker_volumes_or_init_containers", "severity": "medium"}
+    ]
+  },
+  {
+    "id": "k8s_oom_killed_model",
+    "user_query": "Mi modelo de NLP se cae a los pocos minutos de recibir tráfico en Kubernetes con error 'OOMKilled'.",
+    "input_code": "apiVersion: apps/v1\nkind: Deployment\nspec:\n  containers:\n  - name: nlp-model\n    image: nlp-api:v1",
+    "expected_issues": [
+      {"id": "missing_resource_requests_limits", "severity": "critical"},
+      {"id": "explain_memory_management_for_ml", "severity": "high"}
+    ]
+  },
+  {
+    "id": "k8s_no_probes_slow_model",
+    "user_query": "El modelo tarda 30 segundos en cargar los pesos en memoria, pero K8s le envía tráfico en el segundo 1 y falla.",
+    "input_code": "apiVersion: apps/v1\nkind: Deployment\nspec:\n  containers:\n  - name: prediction-api\n    image: pred-api:v2\n    ports:\n    - containerPort: 8000",
+    "expected_issues": [
+      {"id": "missing_startup_or_readiness_probe", "severity": "high"},
+      {"id": "explain_traffic_routing_in_k8s", "severity": "medium"}
+    ]
+  },
+  {
+    "id": "k8s_gpu_node_selector",
+    "user_query": "He desplegado mi modelo en GKE, pero la inferencia va lentísima. Creo que no está usando las GPUs.",
+    "input_code": "apiVersion: apps/v1\nkind: Deployment\nspec:\n  containers:\n  - name: gpu-model\n    image: my-gpu-model:v1",
+    "expected_issues": [
+      {"id": "missing_gpu_resource_request", "severity": "critical"},
+      {"id": "missing_node_selector_or_tolerations_for_gpu", "severity": "high"}
+    ]
+  },
+  {
+    "id": "k8s_model_latest_tag",
+    "user_query": "He actualizado mi modelo en Python, he hecho docker push, pero Kubernetes sigue usando la versión antigua.",
+    "input_code": "containers:\n- name: fraud-model\n  image: my-fraud-model:latest\n  imagePullPolicy: IfNotPresent",
+    "expected_issues": [
+      {"id": "do_not_use_latest_tag_in_prod", "severity": "high"},
+      {"id": "explain_image_pull_policy_behavior", "severity": "medium"}
+    ]
+  },
+  {
+    "id": "cicd_no_model_test",
+    "user_query": "He montado este Action para desplegar mi modelo automáticamente al hacer push en GitHub.",
+    "input_code": "steps:\n- uses: actions/checkout@v3\n- run: docker build -t api .\n- run: kubectl apply -f deploy.yaml",
+    "expected_issues": [
+      {"id": "no_data_or_model_validation_tests", "severity": "high"},
+      {"id": "explain_continuous_integration_for_ml", "severity": "medium"}
+    ]
+  },
+  {
+    "id": "cicd_training_on_push",
+    "user_query": "Quiero que el modelo se reentrene entero cada vez que hago un commit en el repo.",
+    "input_code": "on: [push]\njobs:\n  train:\n    runs-on: ubuntu-latest\n    steps:\n    - run: python train_100_epochs_resnet.py",
+    "expected_issues": [
+      {"id": "expensive_training_on_push", "severity": "high"},
+      {"id": "explain_ct_triggers_data_drift_vs_code_push", "severity": "high"}
+    ]
+  },
+  {
+    "id": "cicd_hardcoded_aws_keys",
+    "user_query": "Este pipeline sube el artefacto del modelo a S3, ¿está bien configurado?",
+    "input_code": "steps:\n- run: aws s3 cp model.pkl s3://my-ml-bucket/\n  env:\n    AWS_ACCESS_KEY_ID: AKIAIOSFODNN7EXAMPLE\n    AWS_SECRET_ACCESS_KEY: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+    "expected_issues": [
+      {"id": "hardcoded_aws_credentials_in_ci", "severity": "critical"},
+      {"id": "explain_oidc_or_github_secrets", "severity": "high"}
+    ]
+  },
+  {
+    "id": "cicd_model_registry_push",
+    "user_query": "¿Cómo conecto mi pipeline con un Model Registry para guardar el modelo antes de construir el Docker?",
+    "input_code": "steps:\n- run: python train.py\n- run: docker build -t mi-modelo .",
+    "expected_issues": [
+      {"id": "suggest_mlflow_or_cloud_registry_integration", "severity": "high"},
+      {"id": "explain_model_artifact_versioning", "severity": "medium"}
+    ]
+  },
+  {
+    "id": "tf_public_s3_model_data",
+    "user_query": "He creado un bucket con Terraform para guardar el dataset de los clientes para entrenar.",
+    "input_code": "resource \"aws_s3_bucket\" \"dataset\" {\n  bucket = \"client-data-ml\"\n}\nresource \"aws_s3_bucket_public_access_block\" \"public\" {\n  bucket = aws_s3_bucket.dataset.id\n  block_public_acls = false\n}",
+    "expected_issues": [
+      {"id": "public_data_leak_risk", "severity": "critical"},
+      {"id": "explain_data_privacy_and_compliance_in_ml", "severity": "high"}
+    ]
+  },
+  {
+    "id": "tf_overprovisioned_ec2",
+    "user_query": "Voy a desplegar un modelo de scikit-learn (muy ligero, Random Forest) en AWS EC2.",
+    "input_code": "resource \"aws_instance\" \"ml_api\" {\n  ami           = \"ami-123456\"\n  instance_type = \"p3.8xlarge\"\n}",
+    "expected_issues": [
+      {"id": "extreme_overprovisioning_finops", "severity": "high"},
+      {"id": "explain_cpu_vs_gpu_for_traditional_ml", "severity": "medium"}
+    ]
+  },
+  {
+    "id": "tf_vertex_ai_no_scaling",
+    "user_query": "Despliegue en GCP. ¿Cómo evito que me cobre cuando no hay predicciones en la madrugada?",
+    "input_code": "resource \"google_compute_instance\" \"ml_server\" {\n  name = \"my-ml-endpoint\"\n  machine_type = \"e2-standard-4\"\n}",
+    "expected_issues": [
+      {"id": "suggest_scale_to_zero_serverless", "severity": "high"},
+      {"id": "explain_cloud_run_or_vertex_endpoints", "severity": "medium"}
+    ]
+  },
+  {
+    "id": "tf_iam_wildcard_sagemaker",
+    "user_query": "Rol de IAM para que SageMaker lea el bucket de entrenamiento.",
+    "input_code": "resource \"aws_iam_policy\" \"sagemaker_policy\" {\n  policy = jsonencode({\n    Statement = [{ Action = \"s3:*\", Effect = \"Allow\", Resource = \"*\" }]\n  })\n}",
+    "expected_issues": [
+      {"id": "iam_wildcard_least_privilege", "severity": "critical"},
+      {"id": "explain_blast_radius_in_cloud_data", "severity": "high"}
+    ]
+  },
+  {
+    "id": "notebook_flask_debug_prod",
+    "user_query": "He pasado mi notebook a un script de Python con Flask para que el frontend lo llame en producción.",
+    "input_code": "import pickle\nfrom flask import Flask\napp = Flask(__name__)\nmodel = pickle.load(open('model.pkl', 'rb'))\n@app.route('/predict')\ndef predict():\n    return str(model.predict([[1,2,3]]))\nif __name__ == '__main__':\n    app.run(host='0.0.0.0', debug=True)",
+    "expected_issues": [
+      {"id": "flask_debug_mode_in_prod", "severity": "critical"},
+      {"id": "suggest_production_wsgi_asgi_server_gunicorn_uvicorn", "severity": "high"}
+    ]
+  },
+  {
+    "id": "fastapi_blocking_ml_call",
+    "user_query": "Mi API de FastAPI se queda colgada cuando varios usuarios piden predicciones a la vez.",
+    "input_code": "@app.post('/predict')\nasync def predict(data: Data):\n    result = heavy_cpu_bound_ml_inference(data)\n    return result",
+    "expected_issues": [
+      {"id": "blocking_event_loop_with_sync_ml", "severity": "high"},
+      {"id": "explain_def_vs_async_def_for_cpu_bound_tasks", "severity": "high"}
+    ]
+  },
+  {
+    "id": "fastapi_cors_frontend",
+    "user_query": "He subido la API de ML a la nube, pero el frontend en React me da un error de 'Blocked by CORS policy'.",
+    "input_code": "from fastapi import FastAPI\napp = FastAPI()\n@app.post('/predict')\ndef predict(): return {'prediction': 1}",
+    "expected_issues": [
+      {"id": "missing_cors_middleware", "severity": "high"},
+      {"id": "explain_cors_for_frontend_backend_integration", "severity": "medium"}
+    ]
+  },
+  {
+    "id": "fastapi_hardcoded_model_path",
+    "user_query": "Este es mi código final del backend. ¿Está bien para pasarlo al equipo de DevOps?",
+    "input_code": "import joblib\nmodel = joblib.load('C:/Users/Juan/Desktop/proyecto_final/modelo_v3.pkl')\n@app.post('/predict')\ndef predict(): pass",
+    "expected_issues": [
+      {"id": "hardcoded_local_absolute_path", "severity": "high"},
+      {"id": "explain_environment_variables_or_model_registry_download", "severity": "medium"}
+    ]
+  }
+]
